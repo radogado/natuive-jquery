@@ -382,24 +382,22 @@ $(document).ready(function() {
 
     function add_blackbox () {
 
-        $('#blackbox .modal-box > div:first-child').prepend('<div class="close"> × </div>');
-        $('#blackbox .modal-box .close').click( close_blackbox );
-        $('.modal-box').on('touchmove', close_blackbox );
-        if ( $('#blackbox .modal-box').height() < window.innerHeight ) {
-            // Center it vertically
-            $('#blackbox .modal-box').css('margin', (( window.innerHeight - $('#blackbox .modal-box').height() ) / 2 + window.scrollY ) + 'px auto' );
-        }
+        $('#blackbox').prepend('<div class="close"> ← ' + document.title +  '</div>');
+        $('#blackbox .close').click( close_blackbox );
         relay_parameters();
     }
 
     function close_blackbox () {
         $('html').css('background-color', '#fff');
         $('#blackbox').remove();
+		document.body.style.overflow = 'auto';
     }
 
     $('a.modal-link, a.lightbox').click ( function () {
 
-        $('body').prepend('<div id="blackbox"> <div class="modal-box"> <div> </div>');
+		document.body.style.overflow = 'hidden';
+
+        $('body').prepend('<div id="blackbox"> <div class="modal-box"> </div> </div>');
 
         $('html').css('background-color', '#333');
 
@@ -407,14 +405,15 @@ $(document).ready(function() {
 
         $('html').click( close_blackbox );
 
-        $('#blackbox .modal-box').click( function (e) {
+        $('#blackbox .close').click( function (e) {
             e.stopPropagation();
         });
 
         if ( $(this).hasClass('lightbox') ) {
             // Show an image lightbox...
             var image_url = $(this).attr('href');
-            $('#blackbox .modal-box').prepend('<img src="' + image_url + '" alt="Lightbox">', add_blackbox );
+            add_blackbox();
+            $('#blackbox').prepend('<img src="' + image_url + '" alt="Lightbox">' );
 
         } else // ... or load external content in a modal window 
         {
