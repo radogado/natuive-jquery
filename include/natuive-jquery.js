@@ -104,25 +104,15 @@ function updateURLParameter(url, param, paramVal) {
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
-function getURLParameters () {
-    // return all URL parameters in an array
+function getURLParameters () { // return all URL parameters in an array
 
-    var p = {};
+	var res = {},
+		re = /[?&]([^?&]+)=([^?&]+)/g;
+	location.href.replace(re, function(_,k,v) {
+		res[k] = v;
+	});
+	return res;
 
-    var match = location.href.match(/[^=&?]+\s*=\s*[^&#]*/g);
-
-    if (match) {
-        for ( var i = match.length; i--; ) {
-            var spl = match[i].split("=");
-            var name = spl[0];
-            var value = spl[1];
-
-            p[name] = p[name] || [];
-            p[name].push(value);
-        }
-    }
-
-    return p;
 }
 
 /* Prizes slider: Bind control event handlers */
@@ -492,6 +482,36 @@ $(document).ready(function() {
         textArea.rows++
 
     });
+
+/* Form validation */
+
+	$('form').each( function (i) {
+		el = this;
+		el.onsubmit = function () {
+			ready_to_submit = true;
+
+			elements = el.querySelectorAll('.mandatory');
+			Array.prototype.forEach.call(elements, function (el, i) {
+				
+				if (!el.querySelector('input, select, textarea').value) { 
+
+					ready_to_submit = false;
+					$(el).addClass('alert');
+
+				} else {
+					
+					$(el).removeClass('alert');
+					
+				}
+
+			});
+
+			return ready_to_submit;
+			
+		};
+		
+	});
+
 });
 
 /* ███████████████████ After everything is loaded, including images ███████████████████ */
