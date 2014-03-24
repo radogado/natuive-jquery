@@ -190,31 +190,31 @@ function rightclick (event) {
 
 var tip;
 
-function hide_tip (e) {
-
-    $(tip).stop().animate({
-        'opacity': '0' 
-    }, 200, function () {
-        $(tip).hide() 
-    });
+function hideTip (e) {
+	
+	if (!tip) return;
+	tip.style.display = 'none';
+	tip.style.opacity = 0;
 
 }
 
-function show_tip (e) {
+function showTip (e) {
 
-    tip = $(this).find('.tip');
+	var event = e || window.event;
+	var target = event.target || event.srcElement;
 
-    $(tip).parent().parent().css('position', 'relative'); // dangerous with absolutely-positioned containers, which should be avoided anyway
+	tip = target.querySelector('.tip');
+	if (!tip) return; //  fix it not to log error in console
+	
+	tip.parentNode.parentNode.style.position = 'relative'; // dangerous with absolutely-positioned containers, which should be avoided anyway
 
-    $(tip).css('top', $(tip).parent().position().top + $(tip).parent().height() );
-
-    $(tip).stop().show().animate({
-        'opacity': '1'
-    }, 200);
-
-    // Add the close button (for touchscreens)
-
+	tip.style.top = (tip.parentNode.offsetTop + tip.parentNode.offsetHeight) + 'px';
+			
+	tip.style.opacity = 1;
+	tip.style.display = 'block';
+	
 }
+
 
 /* Google Analytics - To do: fix script embedding */
 
@@ -418,12 +418,12 @@ $(document).ready(function() {
 
     /* Tooltip */
 
-    $('.tool').click ( show_tip );
+    $('.tool').click ( showTip );
 
     if (!is_touch_device()) 
-        $('.tool').hover ( show_tip, hide_tip );
+        $('.tool').hover ( showTip, hideTip );
 
-    $('.tool').on('touchmove', hide_tip);
+    $('.tool').on('touchmove', hideTip);
 
     /* Retina images replacement */
 
